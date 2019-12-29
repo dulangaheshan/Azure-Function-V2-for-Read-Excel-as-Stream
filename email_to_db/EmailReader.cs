@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
+using System.Data.SqlClient;
 
 namespace email_to_db
 {
@@ -13,7 +14,7 @@ namespace email_to_db
         {
             dynamic byte_obj = Convert_to_byte(file);
 
-            List<string> rows = new List<string>();
+            List<string> row_list = new List<string>();
             List<List<object>> columns = new List<List<object>>();
             System.Text.Encoding.RegisterProvider(provider: System.Text.CodePagesEncodingProvider.Instance);
             using (var stream = new MemoryStream(byte_obj))
@@ -23,7 +24,7 @@ namespace email_to_db
                 using (IExcelDataReader reader = ExcelReaderFactory.CreateOpenXmlReader(stream))
                 {
 
-                    DataSet result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                    DataSet rows = reader.AsDataSet(new ExcelDataSetConfiguration()
                     {
                         ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
                         {
@@ -31,7 +32,8 @@ namespace email_to_db
                         }
                     });
 
-                    return result;
+                    AddToDatabase addToDatabase = new AddToDatabase();
+                    return addToDatabase.AddRowsToDb(rows);
 
                 }
             }
@@ -50,6 +52,8 @@ namespace email_to_db
 
             }
         }
+
+
 
     }
 }
