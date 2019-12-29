@@ -47,13 +47,13 @@ namespace email_to_db
 
                     using (SqlConnection dbConnection = Connection)
                     {
-                        string sQuery = "INSERT INTO test(id,track,[rms Energy],entropy,[spectral RollOff],tempo,[spectral Centroid],[spectral Flux],[z_Crossing Rate])" +
-                                        "VALUES(@id,@Track,@RMS_Energy,@Entropy,@Spectral_RollOff,@Tempo,@Spectral_Centroid,@Spectral_Flux,@Z_Crossing_Rate)";
+                        string sQuery = "INSERT INTO test(track,[rms Energy],entropy,[spectral RollOff],tempo,[spectral Centroid],[spectral Flux],[z_Crossing Rate])" +
+                                        "VALUES(@Track,@RMS_Energy,@Entropy,@Spectral_RollOff,@Tempo,@Spectral_Centroid,@Spectral_Flux,@Z_Crossing_Rate)";
 
                         dbConnection.Open();
-                        dbConnection.Execute(sQuery, new { id=id, Track = Track,RMS_Energy=RMS_Energy,Entropy=Entropy,
+                        dbConnection.Execute(sQuery, new {Track = Track,RMS_Energy=RMS_Energy,Entropy=Entropy,
                             Spectral_RollOff =Spectral_RollOff,Tempo=Tempo,Spectral_Centroid=Spectral_Centroid,Spectral_Flux=Spectral_Flux,Z_Crossing_Rate=Z_Crossing_Rate });
-                        return true;
+                        
 
 
 
