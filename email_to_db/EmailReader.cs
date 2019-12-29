@@ -5,6 +5,7 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace email_to_db
 {
@@ -13,7 +14,7 @@ namespace email_to_db
         public dynamic Read_email(dynamic file)
         {
             dynamic byte_obj = Convert_to_byte(file);
-
+            dynamic result = null;
             List<string> row_list = new List<string>();
             List<List<object>> columns = new List<List<object>>();
             System.Text.Encoding.RegisterProvider(provider: System.Text.CodePagesEncodingProvider.Instance);
@@ -33,7 +34,24 @@ namespace email_to_db
                     });
 
                     AddToDatabase addToDatabase = new AddToDatabase();
-                    return addToDatabase.AddRowsToDb(rows);
+                    foreach (DataTable table in rows.Tables)
+                    {
+
+
+
+                        List<dynamic> test = new List<dynamic>();
+                        var text = JsonConvert.SerializeObject(table);
+                        dynamic values = JsonConvert.DeserializeAnonymousType<dynamic>(text, null);
+
+                        foreach (var val in values)
+                        {
+                            test.Add(val);
+                        }
+
+                        result = addToDatabase.AddRowsToDb(test);
+                    }
+
+                    return result;
 
                 }
             }

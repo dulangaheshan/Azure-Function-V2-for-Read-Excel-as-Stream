@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dapper;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -16,7 +18,7 @@ namespace email_to_db
 
 
 
-        public IDbConnection Connection
+        public SqlConnection Connection
         {
             get
             {
@@ -24,67 +26,56 @@ namespace email_to_db
             }
         }
 
-        public dynamic AddRowsToDb(DataSet rows)
+        public dynamic AddRowsToDb(List<dynamic> rows)
         {
-            List<dynamic> test = new List<dynamic>();
-            Dictionary<dynamic, List<dynamic>> dict = new Dictionary<dynamic, List<dynamic>>();
+
             try
             {
+                int id = -1;
 
-
-
-                foreach (DataTable table in rows.Tables)
+                foreach (var data in rows)
                 {
+                    id = id + 1;
+                    string Track = data["Track"];
+                    double RMS_Energy = data["RMS Energy"];
+                    double Entropy = data["Entropy"];
+                    double Spectral_RollOff = data["Entropy"];
+                    double Tempo = data["Entropy"];
+                    double Spectral_Centroid = data["Entropy"];
+                    double Spectral_Flux = data["Entropy"];
+                    double Z_Crossing_Rate = data["Entropy"];
+
+                    using (SqlConnection dbConnection = Connection)
+                    {
+                        string sQuery = "INSERT INTO test(id,track,[rms Energy],entropy,[spectral RollOff],tempo,[spectral Centroid],[spectral Flux],[z_Crossing Rate])" +
+                                        "VALUES(@id,@Track,@RMS_Energy,@Entropy,@Spectral_RollOff,@Tempo,@Spectral_Centroid,@Spectral_Flux,@Z_Crossing_Rate)";
+
+                        dbConnection.Open();
+                        dbConnection.Execute(sQuery, new { id=id, Track = Track,RMS_Energy=RMS_Energy,Entropy=Entropy,
+                            Spectral_RollOff =Spectral_RollOff,Tempo=Tempo,Spectral_Centroid=Spectral_Centroid,Spectral_Flux=Spectral_Flux,Z_Crossing_Rate=Z_Crossing_Rate });
+                        return true;
 
 
-                    
-                    //int rowcount = table.Rows.Count;
-                    //int columnCount = table.Columns.Count;
-
-                    //for (int c = 0; c <= columnCount; c++)
-                    //{
-                    //    string columnName = table.Columns[c].ColumnName;
-                    //    List<dynamic> tempList = new List<dynamic>();
-
-                    //    //for (int r = 0; r <= rowcount; r++)
-                    //    //{
-                    //    //    var row = table.Rows[r];
-                    //    //    if (row[c] != DBNull.Value)
-                    //    //        tempList.Add((dynamic)row[c]);
-                    //    //    else
-                    //    //        tempList.Add(null);
-                    //    //}
-                    //    test.Add(columnName);
-                    //}
-
-                    ////    test.Add(table);
-                    //// foreach (DataRow row in table.Rows)
-                    ////{
 
 
-                    ////        //test.Add(row);
-                    ////        //foreach (object item in row.ItemArray)
-                    ////        //{
-                    ////        //    // read item
-                    ////        //    test.Add(item);
-                    ////        //}
-                    ////        //foreach (KeyValuePair<dynamic, dynamic> kvp in row.ItemArray)
-                    ////        //{
-                    ////        //    test.Add(kvp.Key);
-                    ////        //    test.Add(kvp.Value);
-                    ////        //}
-                    ////        //test.Add(row);
+                    }
 
-                    ////}
 
-                   
+
+
+
+
+
+                    //return null;
+
+
+
                 }
-                return test;
 
-
-
+                return true;
             }
-            catch(Exception e){
+            catch (Exception e)
+            {
                 return e.ToString();
             }
            
