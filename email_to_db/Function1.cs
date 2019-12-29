@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using IronXL;
 using ExcelDataReader;
 using System.Collections.Generic;
+using System.Data;
 
 namespace email_to_db
 {
@@ -21,46 +22,14 @@ namespace email_to_db
         {
             //dynamic formdata = req.ReadFormAsync();
             dynamic file = req.Form.Files["file"];
-
-            //dynamic file =  new StreamReader(req.Body).ReadToEndAsync();
-            dynamic byte_obj = Convert_to_byte(file);
-            //Byte excel_book = (WorkBook)file;
-            List<string> rows = new List<string>();
-            System.Text.Encoding.RegisterProvider(provider: System.Text.CodePagesEncodingProvider.Instance);
-            using (var stream = new MemoryStream(byte_obj))
-            {
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
-                {
-                    while (reader.Read())
-                    {
-                        for (var i = 0; i < reader.FieldCount; i++)
-                        {
-                            var value = reader.GetValue(i)?.ToString();
-                            rows.Add(value);
-                           
-                        }
-                    }
-                }
-            }
+            EmailReader emailReader = new EmailReader();
+            dynamic result = emailReader.Read_email(file);
 
             return file != null
-                ? (ActionResult)new OkObjectResult(rows)
+                ? (ActionResult)new OkObjectResult(result)
                 : new BadRequestObjectResult("Sorry didn't get it all....");
         }
 
-
-        public static dynamic Convert_to_byte(dynamic file)
-        {
-            using (var ms = new MemoryStream())
-            {
-                file.CopyTo(ms);
-                var fileBytes = ms.ToArray();
-
-                return fileBytes;
-                // string s = Convert.ToBase64String(fileBytes);
-                // act on the Base64 data
-            }
-        }
 
 
     }
