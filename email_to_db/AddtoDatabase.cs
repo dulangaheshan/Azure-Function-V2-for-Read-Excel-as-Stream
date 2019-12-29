@@ -28,7 +28,7 @@ namespace email_to_db
 
         public dynamic AddRowsToDb(List<dynamic> rows)
         {
-
+            List<dynamic> test = new List<dynamic>();
             try
             {
                 int id = -1;
@@ -45,23 +45,43 @@ namespace email_to_db
                     double Spectral_Flux = data["Entropy"];
                     double Z_Crossing_Rate = data["Entropy"];
 
-                    using (SqlConnection dbConnection = Connection)
+                    test.Add(data);
+
+
+                    try
                     {
-                        string sQuery = "INSERT INTO test(track,[rms Energy],entropy,[spectral RollOff],tempo,[spectral Centroid],[spectral Flux],[z_Crossing Rate])" +
-                                        "VALUES(@Track,@RMS_Energy,@Entropy,@Spectral_RollOff,@Tempo,@Spectral_Centroid,@Spectral_Flux,@Z_Crossing_Rate)";
+                        using (SqlConnection dbConnection = Connection)
+                        {
+                            string sQuery = "INSERT INTO test(track,[rms Energy],entropy,[spectral RollOff],tempo,[spectral Centroid],[spectral Flux],[z_Crossing Rate])" +
+                                            "VALUES(@Track,@RMS_Energy,@Entropy,@Spectral_RollOff,@Tempo,@Spectral_Centroid,@Spectral_Flux,@Z_Crossing_Rate)";
 
-                        dbConnection.Open();
-                        dbConnection.Execute(sQuery, new {Track = Track,RMS_Energy=RMS_Energy,Entropy=Entropy,
-                            Spectral_RollOff =Spectral_RollOff,Tempo=Tempo,Spectral_Centroid=Spectral_Centroid,Spectral_Flux=Spectral_Flux,Z_Crossing_Rate=Z_Crossing_Rate });
-                        
+                            dbConnection.Open();
+                            dbConnection.Execute(sQuery, new
+                            {
+                                Track = Track,
+                                RMS_Energy = RMS_Energy,
+                                Entropy = Entropy,
+                                Spectral_RollOff = Spectral_RollOff,
+                                Tempo = Tempo,
+                                Spectral_Centroid = Spectral_Centroid,
+                                Spectral_Flux = Spectral_Flux,
+                                Z_Crossing_Rate = Z_Crossing_Rate
+                            });
 
 
 
 
+
+                        }
+                    }catch(Exception e)
+                    {
+                        test.Add(e.ToString());
+                        return test;
                     }
 
 
 
+                   
 
 
 
@@ -72,7 +92,7 @@ namespace email_to_db
 
                 }
 
-                return true;
+                return test;
             }
             catch (Exception e)
             {

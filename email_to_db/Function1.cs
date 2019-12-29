@@ -18,7 +18,7 @@ namespace email_to_db
     public static class Function1
     {
         [FunctionName("Function1")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, TraceWriter log)
+        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequest req, TraceWriter log)
         {
             //dynamic formdata = req.ReadFormAsync();
             dynamic file = req.Form.Files["file"];
