@@ -14,48 +14,63 @@ namespace email_to_db
         public dynamic Read_email(dynamic file)
         {
             dynamic byte_obj = Convert_to_byte(file);
+            return byte_array_to_datatable(byte_obj);
+            
+        }
+
+        public dynamic byte_array_to_datatable(dynamic byte_obj)
+        {
+
             dynamic result = null;
             List<string> row_list = new List<string>();
             List<List<object>> columns = new List<List<object>>();
             System.Text.Encoding.RegisterProvider(provider: System.Text.CodePagesEncodingProvider.Instance);
-            using (var stream = new MemoryStream(byte_obj))
+            try
             {
-
-                //using (var reader = ExcelReaderFactory.CreateReader(stream))
-                using (IExcelDataReader reader = ExcelReaderFactory.CreateOpenXmlReader(stream))
+                using (var stream = new MemoryStream(byte_obj))
                 {
 
-                    DataSet rows = reader.AsDataSet(new ExcelDataSetConfiguration()
-                    {
-                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
-                        {
-                            UseHeaderRow = true
-                        }
-                    });
-
-                    AddToDatabase addToDatabase = new AddToDatabase();
-                    foreach (DataTable table in rows.Tables)
+                    //using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    using (IExcelDataReader reader = ExcelReaderFactory.CreateOpenXmlReader(stream))
                     {
 
-
-
-                        List<dynamic> test = new List<dynamic>();
-                        var text = JsonConvert.SerializeObject(table);
-                        dynamic values = JsonConvert.DeserializeAnonymousType<dynamic>(text, null);
-
-                        foreach (var val in values)
+                        DataSet rows = reader.AsDataSet(new ExcelDataSetConfiguration()
                         {
-                            test.Add(val);
+                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                            {
+                                UseHeaderRow = true
+                            }
+                        });
+
+                        AddToDatabase addToDatabase = new AddToDatabase();
+                        foreach (DataTable table in rows.Tables)
+                        {
+
+
+
+                            List<dynamic> test = new List<dynamic>();
+                            var text = JsonConvert.SerializeObject(table);
+                            dynamic values = JsonConvert.DeserializeAnonymousType<dynamic>(text, null);
+
+                            foreach (var val in values)
+                            {
+                                test.Add(val);
+                            }
+
+                            result = addToDatabase.AddRowsToDb(test);
                         }
 
-                        result = addToDatabase.AddRowsToDb(test);
+                        return result;
+
                     }
-
-                    return result;
-
                 }
             }
+            catch(Exception e)
+            {
+                return e.ToString();
+            }
             
+
         }
 
 

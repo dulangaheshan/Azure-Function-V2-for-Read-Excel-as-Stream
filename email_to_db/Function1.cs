@@ -12,6 +12,7 @@ using IronXL;
 using ExcelDataReader;
 using System.Collections.Generic;
 using System.Data;
+using System;
 
 namespace email_to_db
 {
@@ -21,13 +22,20 @@ namespace email_to_db
         public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequest req, TraceWriter log)
         {
             //dynamic formdata = req.ReadFormAsync();
-            dynamic file = req.Form.Files["file"];
-            EmailReader emailReader = new EmailReader();
-            dynamic result = emailReader.Read_email(file);
+            try
+            {
+                dynamic file = req.Form.Files["file"];
+                EmailReader emailReader = new EmailReader();
+                dynamic result = emailReader.Read_email(file);
 
-            return file != null
-                ? (ActionResult)new OkObjectResult(result)
-                : new BadRequestObjectResult("Sorry didn't get it all....");
+                return file != null
+                    ? (ActionResult)new OkObjectResult(result)
+                    : new BadRequestObjectResult("Sorry didn't get it all....");
+            }catch(Exception e)
+            {
+                return (ActionResult)new OkObjectResult(e.ToString());
+            }   
+
         }
 
 

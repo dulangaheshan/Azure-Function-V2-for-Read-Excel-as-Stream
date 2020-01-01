@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "email_to_db", "email_to_db\email_to_db.csproj", "{DC5F8724-E3D7-4666-81BA-D81317F3DD53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "email_to_db", "email_to_db\email_to_db.csproj", "{DC5F8724-E3D7-4666-81BA-D81317F3DD53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
